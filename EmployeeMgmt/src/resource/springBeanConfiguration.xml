@@ -1,0 +1,41 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:property-placeholder location="classpath:db.properties" />
+     
+    <bean id="dbConfigure" class="com.cts.login.config.DbConfigure">
+        <property name="dbHost" value="${db.host.url}"/>   
+        <property name="dbPort" value="${db.port.number}"/>
+        <property name="dbService" value="${db.service.name}"/>
+        <property name="dbUrl" value="${db.user}"/>
+        <property name="dbPassword" value="${db.password}"/>
+        <property name="dbDriver" value="${db.driver}"/>
+    </bean>
+    
+	<bean id="loginDelegate" class="com.cts.login.delegate.LoginDelegate">
+		<property name="userService" ref="userService"></property>
+	</bean>
+
+	<bean id="userService" class="com.cts.login.service.impl.UserServiceImpl">
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+
+	<bean name="userDao" class="com.cts.login.dao.impl.UserDaoImpl">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.host.url}${db.port.number}/${db.service.name}" />
+		<property name="username" value="${db.user}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+
+</beans>
